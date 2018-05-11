@@ -14,6 +14,7 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader, LineWriter, Write};
 use std::ops::Add;
 use std::path::Path;
+use std::fs::OpenOptions;
 
 // The immutable configuration of a FileLogWriter.
 struct FileLogWriterConfig {
@@ -355,7 +356,7 @@ fn get_linewriter(
         if let Some(ref link) = config.create_symlink {
             self::platform::create_symlink_if_possible(link, path);
         }
-        LineWriter::new(File::create(&path)?)
+        LineWriter::new(OpenOptions::new().create(true).append(true).open(&path)?)
     };
     Ok((lw, filename))
 }
